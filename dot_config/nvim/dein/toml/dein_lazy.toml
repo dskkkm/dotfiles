@@ -87,6 +87,57 @@ EOF
 [[plugins]]
 repo = 'sindrets/diffview.nvim'
 on_cmd = ['DiffviewOpen', 'DiffviewFileHistory']
+hook_add = '''
+lua << EOF
+-- グローバル keymap（ロード前でもOK）
+local map = vim.keymap.set
+local opts = { noremap = true, silent = true }
+
+map('n', '<leader>dv', '<cmd>DiffviewOpen<CR>', opts)
+map('n', '<leader>dV', '<cmd>DiffviewOpen main...HEAD<CR>', opts)
+map('n', '<leader>dh', '<cmd>DiffviewFileHistory<CR>', opts)
+map('n', '<leader>dc', '<cmd>DiffviewClose<CR>', opts)
+EOF
+'''
+hook_source = '''
+lua << EOF
+-- =========================
+-- Diffview setup
+-- =========================
+require('diffview').setup({
+  keymaps = {
+    disable_defaults = false,
+
+    -- Diff view (差分表示ペイン)
+    view = {
+      ["]c"] = "select_next_entry",
+      ["[c"] = "select_prev_entry",
+      ["r"]  = "refresh_files",
+      ["q"]  = "close",
+    },
+
+    -- ファイル一覧パネル
+    file_panel = {
+      ["j"] = "next_entry",
+      ["k"] = "prev_entry",
+
+      ["<CR>"] = "select_entry",
+      ["s"]    = "select_entry_split",
+      ["v"]    = "select_entry_vsplit",
+
+      ["<Tab>"] = "toggle_files",
+      ["q"]     = "close",
+    },
+
+    -- File history
+    file_history_panel = {
+      ["<CR>"] = "select_entry",
+      ["q"]    = "close",
+    },
+  },
+})
+EOF
+'''
 
 
 # treesitter------------------
