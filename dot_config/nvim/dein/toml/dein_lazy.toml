@@ -81,15 +81,8 @@ require('gitsigns').setup{
     map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
   end
 }
-EOF
-'''
 
-[[plugins]]
-repo = 'sindrets/diffview.nvim'
-on_cmd = ['DiffviewOpen', 'DiffviewFileHistory']
-hook_add = '''
-lua << EOF
--- グローバル keymap（ロード前でもOK）
+-- DiffView設定
 local map = vim.keymap.set
 local opts = { noremap = true, silent = true }
 
@@ -99,6 +92,10 @@ map('n', '<leader>dh', '<cmd>DiffviewFileHistory<CR>', opts)
 map('n', '<leader>dc', '<cmd>DiffviewClose<CR>', opts)
 EOF
 '''
+
+[[plugins]]
+repo = 'sindrets/diffview.nvim'
+on_cmd = ['DiffviewOpen', 'DiffviewFileHistory']
 hook_source = '''
 lua << EOF
 -- =========================
