@@ -244,24 +244,22 @@ EOF
 '''
 
 # 対応するカッコの色付け
-[[plugins]]
-repo = 'p00f/nvim-ts-rainbow'
-on_source = 'nvim-treesitter'
-depends = ['nvim-treesitter']
-hook_source = '''
-lua << EOF
-  require("nvim-treesitter.configs").setup{
-    rainbow = {
-      enable = true,
-      -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
-      extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
-      max_file_lines = nil, -- Do not enable for files with more than n lines, int
-      -- colors = {}, -- table of hex strings
-      -- termcolors = {} -- table of colour name strings
-    }
-  }
-EOF
-'''
+# NOTE: nvim-ts-rainbow は Neovim 0.11+ で非互換のため無効化
+# [[plugins]]
+# repo = 'p00f/nvim-ts-rainbow'
+# on_source = 'nvim-treesitter'
+# depends = ['nvim-treesitter']
+# hook_source = '''
+# lua << EOF
+#   require("nvim-treesitter.configs").setup{
+#     rainbow = {
+#       enable = true,
+#       extended_mode = true,
+#       max_file_lines = nil,
+#     }
+#   }
+# EOF
+# '''
 
 # "gcc"でコメントアウト
 [[plugins]]
@@ -285,6 +283,7 @@ hook_source = '''
   call ddc#custom#patch_global('ui', 'pum')
 
   call ddc#custom#patch_global('sources', [
+      \ 'copilot',
       \ 'around',
       \ 'tmux',
       \ 'file',
@@ -297,6 +296,12 @@ hook_source = '''
     \     'matchers': ['matcher_fuzzy'],
     \     'sorters': ['sorter_fuzzy'],
     \     'converters': ['converter_fuzzy']
+    \   },
+    \   'copilot': {
+    \     'mark': 'Copilot',
+    \     'matchers': [],
+    \     'minAutoCompleteLength': 0,
+    \     'isVolatile': v:true,
     \   },
     \   'around': {'mark': 'Around'},
     \   'tmux': {'mark': 'tmux'},
@@ -321,6 +326,7 @@ hook_source = '''
   " Use Customized labels
   call ddc#custom#patch_global('sourceParams', {
       \ 'lsp': { 'kindLabels': { 'Class': 'c' } },
+      \ 'copilot': { 'copilot': 'vim' },
       \ })
 
   " pum.vim setting
@@ -390,6 +396,21 @@ on_source = 'ddc.vim'
 [[plugins]]
 # fuzzy finder
 repo = 'tani/ddc-fuzzy'
+on_source = 'ddc.vim'
+
+[[plugins]]
+# Copilot source (uses copilot-language-server from Mason)
+repo = 'Shougo/ddc-source-copilot'
+on_source = 'ddc.vim'
+depends = ['copilot.vim']
+hook_source = '''
+  " copilot.vimのデフォルトキーマップを無効化（ddcで補完するため）
+  let g:copilot_no_maps = v:true
+'''
+
+[[plugins]]
+# GitHub Copilot
+repo = 'github/copilot.vim'
 on_source = 'ddc.vim'
 
 # LSP settings=============================
