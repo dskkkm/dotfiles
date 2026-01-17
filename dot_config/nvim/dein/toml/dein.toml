@@ -31,7 +31,7 @@ nmap <C-p> <Plug>AirlineSelectNextTab
 '''
 
 [[plugins]]
-repo = 'yamatsum/nvim-cursorline'
+repo = 'ya2s/nvim-cursorline'
 hook_add = '''
 lua << EOF
 require('nvim-cursorline').setup {

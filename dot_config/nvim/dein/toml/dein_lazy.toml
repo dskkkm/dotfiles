@@ -389,61 +389,51 @@ on_source = 'nvim-lspconfig'
 repo ='williamboman/mason-lspconfig.nvim'
 on_source = 'mason.nvim'
 hook_source = '''
-  " nvim-lspconfig+mason.nvim+mason-lspconfig
-  lua << EOF
-  local on_attach = function(client, bufnr)
-   client.server_capabilities.documentFormattingProvider = false
-   local set = vim.keymap.set
-    set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
-    set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>')
-    set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
-    set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
-    set('n', 'gn', '<cmd>lua vim.lsp.buf.rename()<CR>')
-    set('n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<CR>')
-    set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
-    set('n', 'gx', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
-    set('n', 'g[', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
-    set('n', 'g]', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
-    set('n', 'gf', '<cmd>lua vim.lsp.buf.formatting()<CR>')
-    end
-  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-  vim.lsp.diagnostic.on_publish_diagnostics, { virtual_text = true })
+lua << EOF
+-- =========================
+-- Mason (installer only)
+-- =========================
+require("mason").setup()
 
-  require("mason").setup()
-  require("mason-lspconfig").setup()
-  require("mason-lspconfig").setup_handlers {
-    function(server_name) -- default handler (optional)
-      local opts = {
-        on_attach = on_attach,
-      }
+require("mason-lspconfig").setup({
+  ensure_installed = {
+    "pylsp",
+  },
+})
 
-      -- pylsp setting
-      if server_name == "pylsp" then
-        opts = {
-          settings = {
-            pylsp = {
-              configurationSources = {"flake8"},
-              plugins = {
-                pycodestyle = {enabled = false},
-                mypy = {enabled = false},
-                isort = {enabled = false},
-                yapf = {enabled = false},
-                pylint = {enabled = false},
-                pydocstyle = {enabled = false},
-                mccabe = {enabled = false},
-                preload = {enabled = false},
-                rope_completion = {enabled = false},
-                flake8 = {enabled = true}
-              }
-            }
-          },
-          on_attach = on_attach
-        }
-      end
+-- =========================
+-- LSP (Neovim 0.11 style)
+-- =========================
+local on_attach = function(client, bufnr)
+  client.server_capabilities.documentFormattingProvider = false
 
-      require("lspconfig")[server_name].setup(opts)
-    end
-  }
+  local opts = { buffer = bufnr, noremap = true, silent = true }
+  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+  vim.keymap.set('n', 'K',  vim.lsp.buf.hover, opts)
+  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+  vim.keymap.set('n', 'gn', vim.lsp.buf.rename, opts)
+  vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, opts)
+  vim.keymap.set('n', 'gx', vim.diagnostic.open_float, opts)
+  vim.keymap.set('n', 'gf', function()
+    vim.lsp.buf.format({ async = true })
+  end, opts)
+end
+
+-- LSP 定義（旧 lspconfig.setup の代替）
+vim.lsp.config("pylsp", {
+  on_attach = on_attach,
+  settings = {
+    pylsp = {
+      plugins = {
+        flake8 = { enabled = true },
+        pycodestyle = { enabled = false },
+      },
+    },
+  },
+})
+
+-- 有効化
+vim.lsp.enable("pylsp")
 EOF
 '''
 
