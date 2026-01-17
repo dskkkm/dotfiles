@@ -103,8 +103,23 @@ require'nvim-treesitter.configs'.setup {
   },
   indent = {
     enable = true,
+    disable = { "markdown", "markdown_inline" },
   },
-  ensure_installed = 'all'
+  ensure_installed = {
+    "lua",
+    "vim",
+    "vimdoc",
+    "markdown",
+    "markdown_inline",
+    "python",
+    "c",
+    "cpp",
+    "bash",
+    "json",
+    "yaml",
+    "toml",
+    "dockerfile",
+  }
 }
 EOF
 '''
@@ -462,4 +477,60 @@ EOF
 repo ='mattn/vim-lsp-icons'
 on_source = 'nvim-lspconfig'
 # ======================================
+
+# Markdown表示
+[[plugins]]
+repo = 'MeanderingProgrammer/render-markdown.nvim'
+on_ft = ['markdown']
+hook_source = '''
+autocmd FileType markdown setlocal conceallevel=2
+
+lua << EOF
+require("render-markdown").setup({
+  -- Treesitter を使う（必須）
+  enabled = true,
+
+  -- Markdown ファイルでのみ有効
+  file_types = { "markdown" },
+
+  -- 見出しの装飾
+  heading = {
+    enabled = true,
+    sign = true,
+    icons = { "󰉫 ", "󰉬 ", "󰉭 ", "󰉮 ", "󰉯 ", "󰉰 " },
+  },
+
+  -- コードブロック
+  code = {
+    enabled = true,
+    sign = false,
+    style = "full", -- "full" | "language" | "minimal"
+  },
+
+  -- リスト
+  bullet = {
+    enabled = true,
+    icons = { "•", "◦", "▪" },
+  },
+
+  -- 引用
+  quote = {
+    enabled = true,
+    icon = "▎",
+  },
+
+  -- チェックボックス
+  checkbox = {
+    enabled = true,
+    unchecked = "󰄱 ",
+    checked = "󰄲 ",
+  },
+
+  -- インライン要素
+  inline = {
+    enabled = true,
+  },
+})
+EOF
+'''
 #--------------------------
