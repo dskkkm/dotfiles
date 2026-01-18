@@ -197,8 +197,9 @@ require("snacks").setup({
 })
 local snacks_exclude = { ".git", "venv", "__pycache__", "build" }
 vim.keymap.set("n", "<C-f>",      function() Snacks.picker.files({ exclude = snacks_exclude }) end, { silent = true })
-vim.keymap.set("n", "<C-u>",      function() Snacks.picker.files({ exclude = snacks_exclude, hidden = true, ignored = true }) end, { silent = true })
+vim.keymap.set("n", "<C-u>",      function() Snacks.picker.files({ exclude = snacks_exclude, hidden = true, ignored = true }) end, { desc = "Find Files", silent = true })
 vim.keymap.set("n", "<C-b>",      function() Snacks.picker.buffers() end, { silent = true })
+vim.keymap.set("n", "<C-g>",      function() Snacks.picker.grep({ exclude = snacks_exclude, hidden = true, ignored = true }) end, { desc = "Grep", silent = true })
 vim.keymap.set("n", "<leader>fb", function() Snacks.picker.buffers() end, { desc = "Buffers", silent = true })
 vim.keymap.set("n", "<leader>fc", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, { desc = "Find Config File", silent = true })
 vim.keymap.set("n", "<leader>ff", function() Snacks.picker.files() end, { desc = "Find Files", silent = true })
